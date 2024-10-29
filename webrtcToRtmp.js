@@ -24,7 +24,8 @@ let liveUsers = [];
 
 app.get('/start-stream', (req, res) => {
 
-    const ffmpegPath = 'C:\\ffmpeg\\bin\\ffmpeg.exe'; // Adjust this path as necessary
+    // const ffmpegPath = 'C:\\ffmpeg\\bin\\ffmpeg.exe'; // Adjust this path as necessary
+    const ffmpegPath = '/usr/bin/ffmpeg'; // Adjust this path as necessary
     if (!ffmpegProcess) {
         ffmpegProcess = spawn(ffmpegPath, [
             '-re', // Read input at native frame rate
