@@ -18,7 +18,7 @@
 
     <script>
         const streamId = 'da373f55-034e-4ac1-8d1d-c5ac03190942'; // Replace with actual stream ID
-        const socket = io('http://localhost:5000'); // Ensure this matches your Socket.io server URL
+        const socket = io('http://3.110.92.32:5000'); // Ensure this matches your Socket.io server URL
         let flvPlayer;
 
         document.getElementById("join-btn").onclick = () => {
@@ -30,7 +30,7 @@
             if (flvjs.isSupported()) {
                 flvPlayer = flvjs.createPlayer({
                     type: 'flv',
-                    url: `http://localhost:8000/live/${streamId}.flv` // Ensure this URL matches your NodeMediaServer config
+                    url: `http://3.110.92.32:8000/live/${streamId}.flv` // Ensure this URL matches your NodeMediaServer config
                 });
                 flvPlayer.attachMediaElement(videoElement);
                 flvPlayer.load();

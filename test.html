@@ -67,7 +67,7 @@
 
                 console.log('Local SDP Offer:', offer.sdp); // Log the SDP Offer
 
-                const response = await fetch('http://localhost:3000/start-stream', {
+                const response = await fetch('http://3.110.92.32:3000/start-stream', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ sdp: offer.sdp }) // Send only the SDP string

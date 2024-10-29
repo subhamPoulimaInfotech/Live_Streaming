@@ -16,7 +16,7 @@ nms.run();
 let ffmpegProcess;
 
 // Set RTMP server URL and stream key
-const streamUrl = 'rtmp://localhost:1935/live';
+const streamUrl = 'rtmp://3.110.92.32:1935/live';
 const streamKey = 'da373f55-034e-4ac1-8d1d-c5ac03190942';
 
 let liveUsers = [];
@@ -86,7 +86,7 @@ app.get('/favicon.ico', (req, res) => {
 });
 
 app.listen(3000, () => {
-    console.log('Live streaming API is running on http://localhost:3000');
+    console.log('Live streaming API is running on http://3.110.92.32:3000');
 });
 
 
