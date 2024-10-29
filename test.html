@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Device List</title>
+</head>
+<body>
+    <h1>Available Cameras and Microphones</h1>
+    
+    <h3>Video Input Devices:</h3>
+    <select id="videoInputDevices"></select>
+    
+    <h3>Audio Input Devices:</h3>
+    <select id="audioInputDevices"></select>
+    
+    <button onclick="startStreaming()">Start Streaming with Selected Devices</button>
+    <video id="localVideo" autoplay muted></video>
+    
+    <script>
+        async function listDevices() {
+            const videoSelect = document.getElementById('videoInputDevices');
+            const audioSelect = document.getElementById('audioInputDevices');
+
+            videoSelect.innerHTML = '';
+            audioSelect.innerHTML = '';
+
+            const devices = await navigator.mediaDevices.enumerateDevices();
+
+            devices.forEach(device => {
+                const option = document.createElement('option');
+                option.value = device.deviceId;
+                option.text = device.label || `Device ${device.deviceId}`;
+
+                if (device.kind === 'videoinput') {
+                    videoSelect.appendChild(option);
+                } else if (device.kind === 'audioinput') {
+                    audioSelect.appendChild(option);
+                }
+            });
+        }
+
+        window.onload = listDevices;
+
+        async function startStreaming() {
+            const videoDeviceId = document.getElementById('videoInputDevices').value;
+            const audioDeviceId = document.getElementById('audioInputDevices').value;
+
+            if (!videoDeviceId || !audioDeviceId) {
+                console.log('Please select both video and audio sources.');
+                return;
+            }
+
+            try {
+                const localStream = await navigator.mediaDevices.getUserMedia({
+                    video: { deviceId: videoDeviceId ? { exact: videoDeviceId } : undefined },
+                    audio: { deviceId: audioDeviceId ? { exact: audioDeviceId } : undefined }
+                });
+                
+                document.getElementById('localVideo').srcObject = localStream;
+
+                const peerConnection = new RTCPeerConnection();
+                localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
+
+                const offer = await peerConnection.createOffer();
+                await peerConnection.setLocalDescription(offer);
+
+                console.log('Local SDP Offer:', offer.sdp); // Log the SDP Offer
+
+                const response = await fetch('http://localhost:3000/start-stream', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ sdp: offer.sdp }) // Send only the SDP string
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                const { sdp: answerSdp } = await response.json();
+                console.log('Received SDP Answer:', answerSdp); // Log the received SDP Answer
+
+                await peerConnection.setRemoteDescription({ type: 'answer', sdp: answerSdp });
+
+                peerConnection.onicecandidate = (event) => {
+                    if (event.candidate) {
+                        // Send the ICE candidate to your server if needed
+                    }
+                };
+
+            } catch (error) {
+                console.error('Error accessing media devices or starting stream:', error);
+            }
+        }
+    </script>
+</body>
+</html>

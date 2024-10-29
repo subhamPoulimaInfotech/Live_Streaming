@@ -1,0 +1,15 @@
+{
+  "scripts": {
+    "start": "nodemon webrtcToRtmp.js"
+  },
+  "dependencies": {
+    "child_process": "^1.0.2",
+    "cors": "^2.8.5",
+    "express": "^4.21.1",
+    "mediasoup": "^3.14.16",
+    "node-media-server": "^2.7.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.7"
+  }
+}

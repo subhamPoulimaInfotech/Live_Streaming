@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebRTC Stream</title>
+</head>
+<body>
+    <h1>Start Streaming</h1>
+    <video id="localVideo" autoplay playsinline></video>
+    <button id="startButton">Start Streaming</button>
+
+    <script>
+        const startButton = document.getElementById('startButton');
+        const localVideo = document.getElementById('localVideo');
+        
+        let stream;
+
+        startButton.onclick = async () => {
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+                localVideo.srcObject = stream;
+
+                // Now you need to send the stream via WebRTC to a server
+                // that can convert it to RTMP.
+                // You would send the stream to a WebRTC-to-RTMP server here.
+                console.log('Streaming started!');
+
+            } catch (err) {
+                console.error('Error accessing media devices.', err);
+            }
+        };
+    </script>
+</body>
+</html>
